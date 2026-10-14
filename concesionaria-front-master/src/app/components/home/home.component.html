@@ -1,0 +1,78 @@
+
+
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap" rel="stylesheet">
+    
+
+
+    <!-- Bootstrap core CSS -->
+    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+
+    <!-- Additional CSS Files -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="assets/css/templatemo-chain-app-dev.css">
+    <link rel="stylesheet" href="assets/css/animated.css">
+    <link rel="stylesheet" href="assets/css/owl.css">
+  
+ 
+  <div id="services" class="services section">
+    <div class="container">
+      <div class="row">
+        <div class="">
+          <div class="section-heading  wow fadeInDown" data-wow-duration="1s" data-wow-delay="0.5s">
+            <h4><em><h1>¡ Bienvenido !</h1></em></h4>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <div class="row">
+        <div class="col">
+          <div class="service-item first-service">
+            <div class="icon"></div>
+            <h4>Vehìculos</h4>
+            <p>Lista de Vehiculos de la Sucursal</p>
+            <div class="text-button">
+              <a href="listar()">Vehiculos<i class="fa fa-arrow-right"></i></a>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="service-item fourth-service">
+            <div class="icon"></div>
+            <h4>Facturas</h4>
+            <p>Lista de Facturas de la Sucursal</p>
+            <div class="text-button">
+              <a href="facturas()">Facturas<i class="fa fa-arrow-right"></i></a>
+            </div>
+          </div>
+        </div>
+        <div *ngIf="getRol() === 'ADMIN'">
+        <div class="col">
+          <div class="service-item second-service">
+            <div class="icon"></div>
+            <h4>Usuarios</h4>
+            <p>Lista de Usuario</p>
+            <div class="text-button">
+              <a href="usuarios()">Usuario<i class="fa fa-arrow-right"></i></a>
+            </div>      
+            </div>
+          </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+  <!-- Scripts -->
+  <script src="vendor/jquery/jquery.min.js"></script>
+  <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="assets/js/owl-carousel.js"></script>
+  <script src="assets/js/animation.js"></script>
+  <script src="assets/js/imagesloaded.js"></script>
+  <script src="assets/js/popup.js"></script>
+  <script src="assets/js/custom.js"></script>
