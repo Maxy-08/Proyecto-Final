@@ -24,7 +24,7 @@ public class UsuarioController {
     @PostMapping("/registro")
     public ResponseEntity<UsuarioDto> registro(@RequestBody UsuarioDto usuarioDto) throws Exception {
         UsuarioDto usuarioGuardado = usuarioService.saveUsuario(usuarioDto);
-        return new ResponseEntity<>(usuarioGuardado, HttpStatus.CREATED);
+        return ResponseEntity.status(HttpStatus.CREATED).body(usuarioGuardado);
     }
 
     @GetMapping("/correo/{correo}")
