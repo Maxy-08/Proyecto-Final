@@ -31,9 +31,9 @@ public class UsuarioController {
     public ResponseEntity<UsuarioDto> obtenerPorCorreo(@PathVariable String correo) {
         try {
             UsuarioDto usuarioDto = usuarioService.findByCorreo(correo);
-            return new ResponseEntity<>(usuarioDto, HttpStatus.OK);
+            return ResponseEntity.ok(usuarioDto);
         } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+            return ResponseEntity.notFound().build();
         }
     }
 
@@ -41,15 +41,20 @@ public class UsuarioController {
     public ResponseEntity<UsuarioDto> login(@RequestBody UsuarioDto usuarioDto) {
         try {
             UsuarioDto usuarioVerificado = usuarioService.verificarCredenciales(usuarioDto.getCorreo(), usuarioDto.getContrasena());
-            return new ResponseEntity<>(usuarioVerificado, HttpStatus.OK);
+            return ResponseEntity.ok(usuarioVerificado);
         } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
     }
 
-    @GetMapping("/perfil")
-    public ResponseEntity<UsuarioDto> obtenerPerfil(@SessionAttribute("user") UsuarioDto usuarioDto) {
-        return new ResponseEntity<>(usuarioDto, HttpStatus.OK);
+    @GetMapping("/perfil/{correo}")
+    public ResponseEntity<UsuarioDto> obtenerPerfil(@PathVariable String correo) {
+        try {
+            UsuarioDto usuarioDto = usuarioService.findByCorreo(correo);
+            return ResponseEntity.ok(usuarioDto);
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @GetMapping(value = "/listar/paginado", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -66,12 +71,12 @@ public class UsuarioController {
                 pageResult.getSize(),
                 pageResult.getNumber()
                 );
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/sucursales")
     public ResponseEntity<List<SucursalDto>> listarSucursales() throws Exception {
         List<SucursalDto> sucursales = usuarioService.listarSucursales();
-        return new ResponseEntity<>(sucursales, HttpStatus.OK);
+        return ResponseEntity.ok(sucursales);
     }
 }
