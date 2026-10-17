@@ -1,27 +1,31 @@
 package com.example.demo.dto;
 
-import lombok.Data;
-
-@Data
 public class LoginRequest {
 
-	 private String correo;
-	 private String contrasena;
+    private String correo;
+    private String contrasena;
 
-	    // Getters y Setters
-	    public String getCorreo() {
-	        return correo;
-	    }
+    public LoginRequest() {
+    }
 
-	    public void setCorreo(String correo) {
-	        this.correo = correo;
-	    }
+    public LoginRequest(String correo, String contrasena) {
+        this.correo = correo;
+        this.contrasena = contrasena;
+    }
 
-	    public String getContrasena() {
-	        return contrasena;
-	    }
+    public String getCorreo() {
+        return correo;
+    }
 
-	    public void setContrasena(String contrasena) {
-	        this.contrasena = contrasena;
-	    }
+    public void setCorreo(String correo) {
+        this.correo = correo;
+    }
+
+    public String getContrasena() {
+        return contrasena;
+    }
+
+    public void setContrasena(String contrasena) {
+        this.contrasena = contrasena;
+    }
 }

@@ -8,7 +8,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.example.consecionaria.dto.SucursalDto;
@@ -31,8 +30,10 @@ public class UsuarioServiceImp implements UsuarioService {
         Usuario usuario = new Usuario();
         usuario.setNombre(usuarioDto.getNombre());
         usuario.setCorreo(usuarioDto.getCorreo());
-        usuario.setContrasena(usuarioDto.getContrasena());
-        usuario.setSucursal(new Sucursal(usuarioDto.getIdSucursal()));
+        usuario.setContrasena(usuarioDto.getContrasena()); 
+        if (usuarioDto.getIdSucursal() != null) {
+            usuario.setSucursal(new Sucursal(usuarioDto.getIdSucursal()));
+        }
         usuario.setRol(usuarioDto.getRol());
         return usuario;
     }
@@ -42,65 +43,72 @@ public class UsuarioServiceImp implements UsuarioService {
         usuarioDto.setIdUsuario(usuario.getIdUsuario());
         usuarioDto.setNombre(usuario.getNombre());
         usuarioDto.setCorreo(usuario.getCorreo());
-        usuarioDto.setContrasena(usuario.getContrasena());
-        usuarioDto.setIdSucursal(usuario.getSucursal().getIdSucursal());
+        usuarioDto.setContrasena(usuario.getContrasena()); 
+        if (usuario.getSucursal() != null) {
+            usuarioDto.setIdSucursal(usuario.getSucursal().getIdSucursal());
+        }
         usuarioDto.setRol(usuario.getRol()); 
         return usuarioDto;
     }
     
     private SucursalDto convertToDto(Sucursal sucursal) {
-    	SucursalDto sucursalDto = new SucursalDto();
-    	sucursalDto.setIdSucursal(sucursal.getIdSucursal()); 
-    	sucursalDto.setDireccion(sucursal.getDireccion()); 
-    	return sucursalDto; 
-    	}
-
-    public UsuarioDto saveUsuario(UsuarioDto usuarioDto) {
-    	if (usuarioRepository.findByCorreo(usuarioDto.getCorreo()).isPresent()){ 
-    		throw new RuntimeException("Ya existe un usuario con este correo");
-    		} 
-    	Usuario usuario = convertToEntity(usuarioDto); 
-    	Usuario savedUsuario = usuarioRepository.save(usuario); 
-    	return convertToDto(savedUsuario);
+        SucursalDto sucursalDto = new SucursalDto();
+        sucursalDto.setIdSucursal(sucursal.getIdSucursal()); 
+        sucursalDto.setDireccion(sucursal.getDireccion()); 
+        return sucursalDto; 
     }
 
+    @Override
+    public UsuarioDto saveUsuario(UsuarioDto usuarioDto) {
+        if (usuarioRepository.findByCorreo(usuarioDto.getCorreo()).isPresent()){ 
+            throw new RuntimeException("Ya existe un usuario con este correo");
+        } 
+        Usuario usuario = convertToEntity(usuarioDto); 
+        Usuario savedUsuario = usuarioRepository.save(usuario); 
+        return convertToDto(savedUsuario);
+    }
+
+    @Override
     public UsuarioDto findByCorreo(String correo) {
         Usuario usuario = usuarioRepository.findByCorreo(correo)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
         return convertToDto(usuario);
     }
 
-	@Override
-	public UsuarioDto verificarCredenciales(String correo, String contrasena) throws Exception {
-		 Usuario usuario = usuarioRepository.findByCorreo(correo)
-	                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
-	        if (new BCryptPasswordEncoder().matches(contrasena, usuario.getContrasena())) {
-	            return convertToDto(usuario);
-	        } else {
-	            throw new Exception("Credenciales inválidas");
-	        }
-	}
-	
-	public Page<UsuarioDto> listarUsuariosPaginados(Integer size, String sort, Integer numPage) throws Exception {
-	    if (size <= 0) {
-	        throw new IllegalArgumentException("El tamaño de la página debe ser mayor que cero.");
-	    }
-	    if (numPage < 0) {
-	        throw new IllegalArgumentException("El número de página no puede ser negativo.");
-	    }
-	    if (sort == null || sort.trim().isEmpty()) {
-	        sort = "idUsuario";
-	    }
+    @Override
+    public UsuarioDto verificarCredenciales(String correo, String contrasena) throws Exception {
+        Usuario usuario = usuarioRepository.findByCorreo(correo)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        
+        // Comparación directa en texto plano con .equals()
+        if (usuario.getContrasena() != null && usuario.getContrasena().equals(contrasena)) {
+            return convertToDto(usuario);
+        } else {
+            throw new Exception("Credenciales inválidas");
+        }
+    }
+    
+    @Override
+    public Page<UsuarioDto> listarUsuariosPaginados(Integer size, String sort, Integer numPage) throws Exception {
+        if (size <= 0) {
+            throw new IllegalArgumentException("El tamaño de la página debe ser mayor que cero.");
+        }
+        if (numPage < 0) {
+            throw new IllegalArgumentException("El número de página no puede ser negativo.");
+        }
+        if (sort == null || sort.trim().isEmpty()) {
+            sort = "idUsuario";
+        }
 
-	    Pageable paginacion = PageRequest.of(numPage, size, Sort.by(sort));
-	    Page<Usuario> pageResult = usuarioRepository.findAll(paginacion);
+        Pageable paginacion = PageRequest.of(numPage, size, Sort.by(sort));
+        Page<Usuario> pageResult = usuarioRepository.findAll(paginacion);
 
-	    return pageResult.map(this::convertToDto);
-	}
-	
-	public List<SucursalDto> listarSucursales() throws Exception{ 
-		List<Sucursal> sucursales = sucursalRepositoy.findAll(); 
-		return sucursales.stream().map(this::convertToDto).collect(Collectors.toList()); 
-	}
-
+        return pageResult.map(this::convertToDto);
+    }
+    
+    @Override
+    public List<SucursalDto> listarSucursales() throws Exception { 
+        List<Sucursal> sucursales = sucursalRepositoy.findAll(); 
+        return sucursales.stream().map(this::convertToDto).collect(Collectors.toList()); 
+    }
 }

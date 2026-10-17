@@ -12,9 +12,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import lombok.Data;
 
-@Data
 @Entity
 @Table(name = "solicitudes_vehiculo")
 public class SolicitudVehiculo {
@@ -33,14 +31,52 @@ public class SolicitudVehiculo {
     
     @Enumerated(EnumType.STRING)
     private EstadoEnum estado; 
-    
+
+    public SolicitudVehiculo() {
+    }
+
+    public int getIdSolicitud() {
+        return idSolicitud;
+    }
+
+    public void setIdSolicitud(int idSolicitud) {
+        this.idSolicitud = idSolicitud;
+    }
+
+    public Vehiculo getVehiculo() {
+        return vehiculo;
+    }
+
+    public void setVehiculo(Vehiculo vehiculo) {
+        this.vehiculo = vehiculo;
+    }
+
+    public Sucursal getSucursal() {
+        return sucursal;
+    }
+
+    public void setSucursal(Sucursal sucursal) {
+        this.sucursal = sucursal;
+    }
+
+    public EstadoEnum getEstado() {
+        return estado;
+    }
+
+    public void setEstado(EstadoEnum estado) {
+        this.estado = estado;
+    }
+
     public SolicitudVehiculoDto toDto() {
         SolicitudVehiculoDto dto = new SolicitudVehiculoDto();
-        dto.setIdSolicitud(this.getIdSolicitud());
-        dto.setVehiculoDto(this.getVehiculo().toDto());
-        dto.setSucursal(this.getSucursal().toDto());
-        dto.setEstado(this.getEstado());
+        dto.setIdSolicitud(this.idSolicitud);
+        if (this.vehiculo != null) {
+            dto.setVehiculoDto(this.vehiculo.toDto());
+        }
+        if (this.sucursal != null) {
+            dto.setSucursal(this.sucursal.toDto());
+        }
+        dto.setEstado(this.estado);
         return dto;
     }
 }
-

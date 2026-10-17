@@ -1,7 +1,7 @@
 import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs'; // <-- Agrega 'of' aquí
 import { tap } from 'rxjs/operators';
 
 @Injectable({
@@ -38,23 +38,16 @@ export class AuthService {
     );
   }
 
+  // MODIFICACIÓN EN LOGOUT: Limpia el almacenamiento sin pedir permiso al Backend
   logout(): Observable<void> {
-    const token = this.getToken();
-    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    const options = {
-      withCredentials: true,
-      headers
-    };
-    return this.http.post<void>(`${this.apiUrl}/logout`, {}, options).pipe(
-      tap(() => {
-        if (this.isBrowser) {
-          localStorage.removeItem('token');
-          localStorage.removeItem('usuario');
-          localStorage.removeItem('idSucursal');
-          localStorage.removeItem('rol'); 
-        }
-      })
-    );
+    if (this.isBrowser) {
+      localStorage.removeItem('token');
+      localStorage.removeItem('usuario');
+      localStorage.removeItem('idSucursal');
+      localStorage.removeItem('rol');
+      localStorage.clear(); // Opcional: borra todo el almacenamiento de una vez
+    }
+    return of(undefined); // Devuelve un Observable completado para no romper componentes que esperen la suscripción
   }
 
   isAuthenticated(): boolean {
